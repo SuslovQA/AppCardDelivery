@@ -4,7 +4,11 @@ import org.openqa.selenium.Keys;
 
 
 import java.time.Duration;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
+import static com.codeborne.selenide.Condition.exactText;
+import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Selenide.*;
 
 public class AppCardDelivery {
@@ -12,6 +16,8 @@ public class AppCardDelivery {
 
     @Test
     void shouldSuccessRegistration() {
+        String date = LocalDate.now().plusDays(4).format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
+
         open("http://localhost:9999/");
 
         ElementsCollection inputText = $$(".input__control[type='text']");
@@ -19,57 +25,13 @@ public class AppCardDelivery {
 
         inputText.first().setValue("Екатеринбург");
         inputTel.first().sendKeys(Keys.chord(Keys.SHIFT, Keys.HOME, Keys.DELETE));
-        inputTel.first().setValue("20122025");
+        inputTel.first().setValue(date);
         inputText.last().setValue("Иванов Иван");
         inputTel.last().setValue("+79999999999");
 
         $(".checkbox__box").click();
         $(".button_view_extra").click();
         $("[data-test-id = 'notification']").should(Condition.visible, Duration.ofSeconds(15));
-        $("[data-test-id = 'notification'] .notification__title").should(Condition.exactText("Успешно!"));
+        $("[data-test-id = 'notification'] .notification__content").shouldHave(text("Встреча успешно забронирована на " + date));
     }
-//    Требования к содержимому полей:
-//
-//Город — один из административных центров субъектов РФ.
-//Дата — не ранее трёх дней с текущей даты.
-//В поле фамилии и имени разрешены только русские буквы, дефисы и пробелы.
-//В поле телефона — только 11 цифр, символ + на первом месте.
-//Флажок согласия должен быть выставлен.
-//Тестируемая функциональность: отправка формы.
-//
-//Поля «Город» и «Дата» заполняются через прямой ввод значений
-// без использования выбора из выпадающего списка и всплывающего календаря.
-//
-//Условия: если все поля заполнены корректно, то форма переходит в состояние загрузки:
-//    Важно: состояние загрузки не должно длиться более 15 секунд.
-//
-//После успешной отправки формы появится всплывающее окно
-// об успешном завершении бронирования:
-//
-//
-//
-//Вам необходимо самостоятельно изучить элементы на странице,
-// чтобы подобрать правильные селекторы.
-// Обратите внимание, что элементы могут быть как скрыты,
-// так и динамически добавляться или удаляться из DOM.
-
-//    Важно: Дата и время всегда будут уязвимым местом ваших тестов.
-//
-//Ключевая ловушка в том, что, если вы их захардкодите, то тест,
-// который работал сегодня, уже может не работать завтра, через неделю,
-// месяц, потому что дата может перейти в разряд условного прошлого для приложения
-// и стать невалидной.
-//Кроме того, дата и время — это одно из немногих мест в тестах,
-// где вам иногда придётся писать логику.
-//
-//Для решения данной задачи тоже будет необходимо выполнить генерацию даты
-// согласно требований, описанных в условии.
-//
-//Рекомендуем для генерации строки с датой использовать класс LocalDate,
-// имеющий все необходимые инструменты:
-//
-//метод now() этого класса вернет вам текущую дату
-//plusDays(long daysToAdd) умеет добавлять к дате указанное количество дней
-//format(DateTimeFormatter formatter) выполнит форматирование
-// даты из типа LocalDate в String используя переданный аргументом DateTimeFormatter
 }
