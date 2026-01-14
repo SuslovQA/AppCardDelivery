@@ -5,9 +5,9 @@ plugins {
 group 'ru.netology'
 version '1.0-SNAPSHOT'
 
-// используем 11 версию языка
+// используем 17 версию языка
 java {
-    sourceCompatibility = 11
+    sourceCompatibility = 17
 }
 
 // кодировка файлов (если используете русский язык в файлах)
